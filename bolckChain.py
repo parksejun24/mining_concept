@@ -25,7 +25,6 @@ class Blockchain():
 
     def saveChain(updateList):
         global count, chain
-        print(count, len(chain))
         chain[count-1][0] = updateList['index']
         chain[count-1][1] = updateList['timeStamp']
         chain[count-1][2] = updateList['data']
@@ -33,8 +32,7 @@ class Blockchain():
         chain[count-1][4] = updateList['nonce']
         count = count +1
 
-        nextChain = []
-        
+        nextChain = []       
         for row in range(count):
             line = []
             for col in range(5):
@@ -43,11 +41,14 @@ class Blockchain():
                 else:
                     line.append(None)
             nextChain.append(line)
-        
+
         chain = nextChain
-        print(count, len(chain))
         
     def catchData():
+        if count == 1:
+            print("Data Block is empty")
+            Blockchain.Play()
+
         print("The current index ranges from 0 to {}.".format(count-2))
         needData = input("Enter index value for the data you want. : ")
         needData = int(needData)
@@ -65,18 +66,31 @@ class Blockchain():
         passward = passward.zfill(level)
         hashcode = ""
         i = 0
+        b = 0
+        c = 0
         while passward != hashcode:  
-            hashcode = hashlib.sha256(str(i).encode("utf-8")).hexdigest() 
+            hashcode = hashlib.sha256(str(c).encode("utf-8")).hexdigest()
             hashcode = hashcode[0:level]
-            i = i + 1
-            print(passward, hashcode, i)
+            i = np.random.rand()
+            b = np.random.rand()
+            c = i*b 
+            print(hashcode, c)
 
         print("The data value is %s." %chain[int(needData)][2])
-        
-for i in range(10):
-    Blockchain.saveChain(Blockchain.newBlock())
 
-for i in range(11):
-    print(chain[i])
+    def Play():
+        print("1. 데이터 입력 | 2. 데이터 선택 | 3. 종료")
+        command =  input()
+        if command == '1':
+            Blockchain.saveChain(Blockchain.newBlock())
+            Blockchain.Play()
+        elif command == '2':
+            Blockchain.catchData()
+            Blockchain.Play()
+        elif command == '3':
+            exit()
+        else:
+            print("Please enter a valid input")
+            Blockchain.Play()
 
-Blockchain.catchData()
+Blockchain.Play()
